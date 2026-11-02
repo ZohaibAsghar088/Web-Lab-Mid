@@ -1,0 +1,1015 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Typing Challenge - CSC336</title>
+
+<style>
+:root {
+ --bg:#0b1220;
+ --panel:#182740;
+ --text:#eef4ff;
+ --muted:#9eacc4;
+ --cyan:#52d6e8;
+ --green:#4ade80;
+ --red:#fb7185;
+}
+
+* { box-sizing:border-box; }
+
+body {
+ margin:0;
+ min-height:100vh;
+ background:radial-gradient(circle at 15% 5%,#1a3150,transparent 35%),linear-gradient(135deg,#0b1220,#101a2d);
+ font-family:Arial,sans-serif;
+ color:var(--text);
+}
+
+button,select { font:inherit; }
+
+button {
+ cursor:pointer;
+ border:0;
+ border-radius:12px;
+ padding:11px 17px;
+ font-weight:bold;
+}
+
+button:hover { filter:brightness(1.12); }
+
+.wrap {
+ width:min(1100px,94%);
+ margin:auto;
+ padding:25px 0 45px;
+}
+
+.top {
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:25px;
+ gap:12px;
+}
+
+.brand {
+ display:flex;
+ align-items:center;
+ gap:12px;
+}
+
+.logo {
+ width:44px;
+ height:44px;
+ border-radius:14px;
+ display:grid;
+ place-items:center;
+ background:linear-gradient(135deg,var(--cyan),#a78bfa);
+ color:#071321;
+ font-size:23px;
+ font-weight:bold;
+}
+
+.brand h1 { margin:0; font-size:25px; }
+.brand p { margin:3px 0; color:var(--muted); font-size:12px; }
+
+.tag {
+ border:1px solid #31435f;
+ padding:8px 12px;
+ border-radius:25px;
+ font-size:12px;
+}
+
+.panel {
+ background:linear-gradient(145deg,#182740,#101b2e);
+ border:1px solid #2a3d5c;
+ border-radius:22px;
+ padding:clamp(18px,3vw,30px);
+ box-shadow:0 18px 50px #0004;
+}
+
+.hidden { display:none!important; }
+
+.eyebrow {
+ color:var(--cyan);
+ font-size:12px;
+ letter-spacing:2px;
+ font-weight:bold;
+}
+
+.hero {
+ text-align:center;
+ padding:30px 10px 24px;
+}
+
+.hero h2 {
+ font-size:clamp(29px,5vw,48px);
+ margin:12px 0;
+}
+
+.hero p {
+ max-width:650px;
+ margin:auto;
+ color:var(--muted);
+ line-height:1.6;
+}
+
+.config {
+ display:flex;
+ flex-wrap:wrap;
+ align-items:end;
+ gap:14px;
+ margin:22px 0;
+}
+
+.field {
+ display:flex;
+ flex-direction:column;
+ gap:7px;
+}
+
+.field label {
+ color:var(--muted);
+ font-size:12px;
+ font-weight:bold;
+}
+
+select {
+ background:#0c1728;
+ color:white;
+ border:1px solid #3b506f;
+ border-radius:10px;
+ padding:11px;
+}
+
+.hint {
+ color:var(--muted);
+ font-size:13px;
+ line-height:1.5;
+}
+
+.modes {
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:18px;
+ margin-top:24px;
+}
+
+.mode-card {
+ padding:24px;
+ border-radius:18px;
+ background:#0f1b2e;
+ border:1px solid #304362;
+ display:flex;
+ flex-direction:column;
+ gap:12px;
+}
+
+.mode-icon { font-size:36px; }
+.mode-card h3 { margin:0; font-size:22px; }
+
+.mode-card p {
+ color:var(--muted);
+ line-height:1.5;
+ min-height:48px;
+}
+
+.primary {
+ background:linear-gradient(100deg,#43d4e6,#8b9cff);
+ color:#071321;
+}
+
+.secondary {
+ background:#293b58;
+ color:white;
+ border:1px solid #415879;
+}
+
+.danger {
+ background:#4a2436;
+ color:#ffdbe3;
+ border:1px solid #87405b;
+}
+
+.game-head {
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ flex-wrap:wrap;
+ gap:12px;
+ margin-bottom:16px;
+}
+
+.game-head h2 { margin:0; }
+
+.stats {
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:10px;
+ margin:15px 0;
+}
+
+.stat {
+ background:#0c1728;
+ border:1px solid #293e5e;
+ border-radius:13px;
+ padding:12px;
+ text-align:center;
+}
+
+.stat span {
+ display:block;
+ color:var(--muted);
+ font-size:11px;
+ letter-spacing:1px;
+ text-transform:uppercase;
+}
+
+.stat strong {
+ display:block;
+ font-size:22px;
+ margin-top:5px;
+}
+
+.arena {
+ height:390px;
+ position:relative;
+ overflow:hidden;
+ border-radius:17px;
+ border:1px solid #344b6c;
+ background:linear-gradient(180deg,#10233c,#0a1729);
+}
+
+.arena:before {
+ content:"";
+ position:absolute;
+ inset:0;
+ background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);
+ background-size:35px 35px;
+}
+
+.bubble {
+ position:absolute;
+ width:55px;
+ height:55px;
+ border-radius:50%;
+ display:grid;
+ place-items:center;
+ font-size:22px;
+ font-weight:900;
+ color:#071321;
+ background:linear-gradient(145deg,#5de3ee,#8b9cff);
+ box-shadow:0 6px 22px #48d6e866;
+ z-index:2;
+}
+
+.arena-message {
+ position:absolute;
+ inset:0;
+ display:grid;
+ place-items:center;
+ color:#8fa5c4;
+ font-weight:bold;
+ pointer-events:none;
+ z-index:3;
+}
+
+.feedback {
+ min-height:28px;
+ margin:10px 0;
+ font-weight:bold;
+ color:var(--muted);
+}
+
+.feedback.good { color:var(--green); }
+.feedback.bad { color:var(--red); }
+
+.magnet-layout {
+ display:grid;
+ grid-template-columns:1fr 1.15fr;
+ gap:18px;
+ align-items:center;
+}
+
+.target-box {
+ background:#0c1728;
+ border:1px solid #314765;
+ border-radius:18px;
+ padding:24px;
+ text-align:center;
+}
+
+.target-letter {
+ font-size:90px;
+ font-weight:950;
+ color:var(--cyan);
+}
+
+.keyboard {
+ display:grid;
+ grid-template-columns:repeat(7,minmax(0,1fr));
+ gap:7px;
+}
+
+.key {
+ padding:13px 0;
+ background:#243752;
+ border:1px solid #435a7b;
+ color:white;
+ border-radius:8px;
+ font-weight:bold;
+}
+
+.key.active {
+ background:#3bc9dc;
+ color:#071321;
+}
+
+.key.pressed {
+ background:#286348;
+ color:white;
+}
+
+.key.wrong {
+ background:#743448;
+ color:white;
+}
+
+.result { text-align:center; padding:25px; }
+
+.result-score {
+ font-size:58px;
+ font-weight:950;
+ color:var(--cyan);
+}
+
+.result-grid {
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:10px;
+ max-width:650px;
+ margin:22px auto;
+}
+
+.footer {
+ text-align:center;
+ color:#7386a3;
+ font-size:12px;
+ margin-top:22px;
+}
+
+@media(max-width:700px) {
+ .modes { grid-template-columns:1fr; }
+ .stats { grid-template-columns:repeat(2,1fr); }
+ .arena { height:360px; }
+ .magnet-layout { grid-template-columns:1fr; }
+ .result-grid { grid-template-columns:repeat(2,1fr); }
+ .tag { display:none; }
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<header class="top">
+ <div class="brand">
+  <div class="logo">⌨</div>
+  <div>
+   <h1>Typing Challenge</h1>
+   <p>CSC336 · Web Technologies · Lab Mid</p>
+  </div>
+ </div>
+ <div class="tag">HTML5 · CSS3 · JavaScript ES6+</div>
+</header>
+
+<!-- HOME SCREEN -->
+<section id="home" class="panel">
+
+ <div class="hero">
+  <div class="eyebrow">TRAIN YOUR FINGERS · TEST YOUR SPEED</div>
+  <h2>Ready to take the<br>typing challenge?</h2>
+  <p>
+   Choose a game mode, set your difficulty,
+   and improve your keyboard accuracy.
+  </p>
+ </div>
+
+ <div class="config">
+  <div class="field">
+   <label for="difficulty">DIFFICULTY</label>
+   <select id="difficulty">
+    <option>Easy</option>
+    <option selected>Medium</option>
+    <option>Hard</option>
+   </select>
+  </div>
+
+  <p class="hint">
+   Both modes use only A, S, D, F, J, K and L.
+   Total mistake limit is 5.
+  </p>
+ </div>
+
+ <div class="modes">
+
+  <article class="mode-card">
+   <div class="mode-icon">🫧</div>
+   <h3>Mode A · Bubbles</h3>
+   <p>
+    Type the letters inside moving bubbles
+    before they reach the top.
+   </p>
+   <button class="primary" onclick="startGame('bubbles')">
+    Start Bubbles →
+   </button>
+  </article>
+
+  <article class="mode-card">
+   <div class="mode-icon">🧲</div>
+   <h3>Mode B · KeyMagnet</h3>
+   <p>
+    Focus on the target key and type it
+    using your keyboard.
+   </p>
+   <button class="primary" onclick="startGame('magnet')">
+    Start KeyMagnet →
+   </button>
+  </article>
+
+ </div>
+</section>
+
+<!-- GAME SCREEN -->
+<section id="game" class="panel hidden">
+
+ <div class="game-head">
+  <div>
+   <div class="eyebrow" id="modeLabel">GAME MODE</div>
+   <h2 id="gameTitle">Bubbles</h2>
+  </div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+   <button class="secondary" onclick="restartGame()">↻ Restart</button>
+   <button class="danger" onclick="resetGame()">Reset</button>
+   <button class="secondary" onclick="goHome()">Home</button>
+  </div>
+ </div>
+
+ <div class="stats">
+  <div class="stat">
+   <span>Score</span>
+   <strong id="score">0</strong>
+  </div>
+
+  <div class="stat">
+   <span>Time Left</span>
+   <strong id="time">60</strong>
+  </div>
+
+  <div class="stat">
+   <span>Total Mistakes</span>
+   <strong id="mistakeCount">0/5</strong>
+  </div>
+
+  <div class="stat">
+   <span>Difficulty</span>
+   <strong id="level">Medium</strong>
+  </div>
+ </div>
+
+ <div id="bubbleArea" class="arena">
+  <div id="arenaMessage" class="arena-message">
+   Press Start to begin
+  </div>
+ </div>
+
+ <div id="magnetArea" class="magnet-layout hidden">
+
+  <div class="target-box">
+   <div class="eyebrow">TYPE THIS KEY</div>
+   <div id="targetLetter" class="target-letter">A</div>
+   <p class="hint">
+    Press the matching physical keyboard key
+    or tap the key below.
+   </p>
+  </div>
+
+  <div class="target-box">
+   <div class="eyebrow">KEYBOARD PANEL</div>
+   <div id="keyboard" class="keyboard"></div>
+  </div>
+
+ </div>
+
+ <div id="feedback" class="feedback" aria-live="polite">
+  Choose a mode and start playing.
+ </div>
+
+ <button id="startBtn" class="primary" onclick="beginSession()">
+  ▶ Start Game
+ </button>
+
+ <span class="hint" id="ruleText"></span>
+
+</section>
+
+<!-- RESULTS SCREEN -->
+<section id="results" class="panel hidden">
+ <div class="result">
+
+  <div class="eyebrow">SESSION COMPLETE</div>
+
+  <h2 id="resultTitle">Great effort!</h2>
+
+  <div class="result-score" id="resultScore">0</div>
+
+  <p class="hint" id="resultMessage"></p>
+
+  <div class="result-grid" id="resultGrid"></div>
+
+  <button class="primary" onclick="restartGame()">Play Again</button>
+  <button class="secondary" onclick="goHome()">Back to Home</button>
+
+ </div>
+</section>
+
+<div class="footer">
+ Typing Challenge Game · CSC336 Web Technologies Lab Mid
+</div>
+
+</div>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+
+// ONLY THESE SEVEN LETTERS ARE USED IN BOTH MODES
+const GAME_KEYS = "ASDFJKL".split("");
+
+const settings = {
+ Easy: {
+  duration:60,
+  speed:34,
+  spawn:1450,
+  bubbles:5,
+  goal:15
+ },
+ Medium: {
+  duration:50,
+  speed:52,
+  spawn:1150,
+  bubbles:6,
+  goal:20
+ },
+ Hard: {
+  duration:40,
+  speed:75,
+  spawn:850,
+  bubbles:7,
+  goal:25
+ }
+};
+
+let mode = "bubbles";
+let level = "Medium";
+let running = false;
+
+let score = 0;
+let misses = 0;
+let wrong = 0;
+let correct = 0;
+let timeLeft = 0;
+
+let bubbles = [];
+
+let rafId = null;
+let spawnId = null;
+let timerId = null;
+let lastFrame = 0;
+
+let totalResponse = 0;
+let responseCount = 0;
+let lastResponse = 0;
+
+let target = "";
+let sessionEnded = false;
+
+const rand = arr =>
+ arr[Math.floor(Math.random() * arr.length)];
+
+function totalMistakes() {
+ return misses + wrong;
+}
+
+function show(section) {
+ ["home","game","results"].forEach(id => {
+  $(id).classList.toggle("hidden",id !== section);
+ });
+}
+
+function startGame(which) {
+ mode = which;
+ level = $("difficulty").value;
+
+ show("game");
+
+ $("gameTitle").textContent =
+  which === "bubbles"
+  ? "Bubbles · Letter Recognition"
+  : "KeyMagnet · Keyboard Precision";
+
+ $("modeLabel").textContent =
+  which === "bubbles" ? "MODE A" : "MODE B";
+
+ $("bubbleArea").classList.toggle("hidden",which !== "bubbles");
+ $("magnetArea").classList.toggle("hidden",which !== "magnet");
+
+ $("ruleText").textContent =
+  "Only A, S, D, F, J, K, L keys. Total mistakes allowed: 5.";
+
+ buildKeyboard();
+ resetState();
+}
+
+function resetState() {
+ stopLoops();
+
+ running = false;
+ sessionEnded = false;
+
+ score = 0;
+ misses = 0;
+ wrong = 0;
+ correct = 0;
+
+ timeLeft = settings[level].duration;
+
+ bubbles = [];
+
+ totalResponse = 0;
+ responseCount = 0;
+ lastResponse = 0;
+
+ $("feedback").textContent = "Press Start to begin.";
+ $("feedback").className = "feedback";
+
+ $("startBtn").classList.remove("hidden");
+ $("startBtn").textContent = "▶ Start Game";
+
+ $("arenaMessage").classList.remove("hidden");
+ $("arenaMessage").textContent =
+  mode === "bubbles"
+  ? "Press Start to begin"
+  : "Press Start, then type the target key";
+
+ $("bubbleArea").querySelectorAll(".bubble").forEach(b => b.remove());
+
+ if(mode === "magnet") newTarget();
+
+ renderStats();
+}
+
+function beginSession() {
+ if(running) return;
+
+ resetState();
+
+ running = true;
+ lastFrame = 0;
+
+ $("startBtn").classList.add("hidden");
+ $("arenaMessage").classList.add("hidden");
+
+ feedback(
+  mode === "bubbles"
+  ? "Go! Type the letters in the bubbles."
+  : "Go! Type the highlighted target key.",
+  ""
+ );
+
+ if(mode === "bubbles") {
+  for(let i = 0; i < settings[level].bubbles; i++) {
+   spawnBubble(true);
+  }
+
+  rafId = requestAnimationFrame(animate);
+
+  spawnId = setInterval(() => {
+   if(bubbles.length < settings[level].bubbles + 3) {
+    spawnBubble();
+   }
+  },settings[level].spawn);
+
+ } else {
+  newTarget();
+  lastResponse = performance.now();
+ }
+
+ timerId = setInterval(() => {
+  timeLeft--;
+  renderStats();
+
+  if(timeLeft <= 0) {
+   endGame("Time is up!");
+  }
+ },1000);
+
+ renderStats();
+}
+
+function stopLoops() {
+ if(rafId !== null) cancelAnimationFrame(rafId);
+ if(spawnId !== null) clearInterval(spawnId);
+ if(timerId !== null) clearInterval(timerId);
+
+ rafId = null;
+ spawnId = null;
+ timerId = null;
+}
+
+function renderStats() {
+ $("score").textContent = score;
+ $("time").textContent = timeLeft;
+ $("mistakeCount").textContent = totalMistakes() + "/5";
+ $("level").textContent = level;
+}
+
+function checkMistakeLimit() {
+ renderStats();
+
+ if(totalMistakes() >= 5) {
+  endGame("Game Over! You reached 5 total mistakes.");
+  return true;
+ }
+
+ return false;
+}
+
+function spawnBubble(initial = false) {
+ const area = $("bubbleArea");
+ const size = 55;
+
+ const max = Math.max(0,area.clientWidth-size);
+
+ const el = document.createElement("div");
+ el.className = "bubble";
+
+ // BUBBLES ALSO USE ONLY THE SEVEN SELECTED KEYS
+ const letter = rand(GAME_KEYS);
+
+ el.textContent = letter;
+
+ const x = Math.random() * max;
+
+ const y = initial
+  ? area.clientHeight - 65 - Math.random() * 210
+  : area.clientHeight + 10;
+
+ el.style.left = x + "px";
+ el.style.top = y + "px";
+
+ area.appendChild(el);
+
+ bubbles.push({
+  el,
+  letter,
+  x,
+  y,
+  speed:settings[level].speed * (0.85 + Math.random()*0.35)
+ });
+}
+
+function animate(ts) {
+ if(!running || mode !== "bubbles") return;
+
+ const dt = lastFrame
+  ? Math.min((ts-lastFrame)/1000,0.05)
+  : 0;
+
+ lastFrame = ts;
+
+ for(let i = bubbles.length-1; i >= 0; i--) {
+  const b = bubbles[i];
+
+  b.y -= b.speed * dt;
+  b.el.style.top = b.y + "px";
+
+  if(b.y < -58) {
+   b.el.remove();
+   bubbles.splice(i,1);
+
+   misses++;
+
+   feedback("Missed bubble! Total mistakes: " + totalMistakes() + "/5","bad");
+
+   if(checkMistakeLimit()) return;
+  }
+ }
+
+ rafId = requestAnimationFrame(animate);
+}
+
+function feedback(msg,type) {
+ $("feedback").textContent = msg;
+ $("feedback").className = "feedback " + (type || "");
+}
+
+function handleBubbleKey(key) {
+ if(!running || mode !== "bubbles") return;
+
+ // Ignore all keys except A, S, D, F, J, K, L
+ if(!GAME_KEYS.includes(key)) return;
+
+ const index = bubbles.findIndex(b => b.letter === key);
+
+ if(index >= 0) {
+  const b = bubbles[index];
+
+  b.el.remove();
+  bubbles.splice(index,1);
+
+  score += 10;
+  correct++;
+
+  feedback("Correct! +10 points","good");
+
+ } else {
+  score = Math.max(0,score-5);
+  wrong++;
+
+  feedback("Wrong key! Total mistakes: " + totalMistakes() + "/5","bad");
+
+  if(checkMistakeLimit()) return;
+ }
+
+ renderStats();
+}
+
+function buildKeyboard() {
+ $("keyboard").innerHTML = "";
+
+ GAME_KEYS.forEach(k => {
+  const btn = document.createElement("button");
+
+  btn.className = "key";
+  btn.textContent = k;
+  btn.dataset.key = k;
+
+  btn.addEventListener("click",() => {
+   handleMagnetKey(k);
+  });
+
+  $("keyboard").appendChild(btn);
+ });
+}
+
+function newTarget() {
+ target = rand(GAME_KEYS);
+
+ $("targetLetter").textContent = target;
+
+ document.querySelectorAll(".key").forEach(k => {
+  k.classList.remove("pressed","wrong");
+  k.classList.toggle("active",k.dataset.key === target);
+ });
+}
+
+function handleMagnetKey(key) {
+ if(!running || mode !== "magnet") return;
+
+ if(!GAME_KEYS.includes(key)) return;
+
+ const now = performance.now();
+
+ if(lastResponse) {
+  totalResponse += now-lastResponse;
+  responseCount++;
+ }
+
+ lastResponse = now;
+
+ if(key === target) {
+  score += 10;
+  correct++;
+
+  feedback("Correct key! +5 points","good");
+
+  const el = document.querySelector(
+   '.key[data-key="' + key + '"]'
+  );
+
+  if(el) el.classList.add("pressed");
+
+  if(correct >= settings[level].goal) {
+   renderStats();
+   endGame("Target completed!");
+   return;
+  }
+
+  newTarget();
+
+ } else {
+  wrong++;
+  score -= 5;
+
+  feedback("Wrong key! Total mistakes: " + totalMistakes() + "/5","bad");
+
+  const el = document.querySelector(
+   '.key[data-key="' + key + '"]'
+  );
+
+  if(el) {
+   el.classList.add("wrong");
+
+   setTimeout(() => {
+    el.classList.remove("wrong");
+   },250);
+  }
+
+  if(checkMistakeLimit()) return;
+ }
+
+ renderStats();
+}
+
+// PHYSICAL KEYBOARD INPUT
+document.addEventListener("keydown",e => {
+ if(!running || e.ctrlKey || e.altKey || e.metaKey) return;
+
+ const key = e.key.toUpperCase();
+
+ if(!GAME_KEYS.includes(key)) return;
+
+ e.preventDefault();
+
+ if(mode === "bubbles") {
+  handleBubbleKey(key);
+ } else {
+  handleMagnetKey(key);
+ }
+});
+
+function endGame(reason) {
+ if(sessionEnded) return;
+
+ sessionEnded = true;
+ running = false;
+
+ stopLoops();
+
+ $("resultTitle").textContent = reason;
+ $("resultScore").textContent = score;
+
+ $("resultMessage").textContent =
+  "Your game has finished. Your total mistakes were " +
+  totalMistakes() + " out of 5.";
+
+ const avg = responseCount
+  ? (totalResponse/responseCount/1000).toFixed(2) + " s"
+  : "—";
+
+ const accuracy = (correct+wrong)
+  ? Math.round(correct/(correct+wrong)*100) + "%"
+  : "0%";
+
+ const items = [
+  ["Correct",correct],
+  ["Misses",misses],
+  ["Wrong",wrong],
+  ["Total Mistakes",totalMistakes()+"/5"],
+  ["Accuracy",accuracy],
+  ["Difficulty",level],
+  ["Time Left",timeLeft+" s"],
+  ["Avg. Response",avg]
+ ];
+
+ $("resultGrid").innerHTML = items.map(([a,b]) =>
+  '<div class="stat"><span>' + a +
+  '</span><strong>' + b +
+  '</strong></div>'
+ ).join("");
+
+ show("results");
+}
+
+function restartGame() {
+ startGame(mode);
+ beginSession();
+}
+
+function resetGame() {
+ resetState();
+}
+
+function goHome() {
+ stopLoops();
+ running = false;
+ show("home");
+}
+
+</script>
+</body>
+</html>
